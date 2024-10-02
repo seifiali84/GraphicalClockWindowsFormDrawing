@@ -1,3 +1,6 @@
+using Microsoft.VisualBasic.Devices;
+using System.Drawing.Drawing2D;
+
 namespace SimpleWatch
 {
     public partial class Form1 : Form
@@ -21,6 +24,25 @@ namespace SimpleWatch
 
             // Draw clock circle
             g.DrawEllipse(Pens.Black, centerX - clockRadius, centerY - clockRadius, clockRadius * 2, clockRadius * 2);
+
+            // Create Font Family and String Format and Graphic Path
+            GraphicsPath graphicsPath = new GraphicsPath();
+            FontFamily font = new FontFamily("Arial");
+            StringFormat stringFormat = new StringFormat();
+
+            // Draw Clock Numbers
+            graphicsPath.AddString("12", font, 0, 30, new Point(centerX - 16, centerY - 16 - (clockRadius - 16)) , stringFormat);
+            for (int i = 0; i < 12; i++)
+            {
+                if(i + 3 == 12)
+                {
+                    continue;
+                }
+                double Angel = (i % 12 * Math.PI / 6);
+                graphicsPath.AddString(((i + 3) % 12).ToString(), font, 0, 30, new Point((int)(centerX - 16 + ((clockRadius - 16) * Math.Cos(Angel))), (int)(centerY - 16 + ((clockRadius - 16) * Math.Sin(Angel)))), stringFormat);
+            }
+
+            g.DrawPath(new Pen(Color.Black), graphicsPath);
 
             // Get the current time
             DateTime now = DateTime.Now;
